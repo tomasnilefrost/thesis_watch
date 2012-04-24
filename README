@@ -1,0 +1,3 @@
+Thesis Watch is a simple utility that crawls ISY and IDA and searches for
+thesis presentations. It will notify the user by mail if there are any new
+thesis presentations posted.
