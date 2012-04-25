@@ -54,10 +54,8 @@ for url in urls:
 		theses_dict.update({ author : entry })
 
 
-print theses_dict
-print old_dict
-
 new_theses = [thesis for thesis in theses_dict if thesis not in old_dict]
+something_removed = any([True for thesis in old_dict if thesis not in theses_dict])
 
 mail_str = ""
 if (len(new_theses) != 0):
@@ -66,13 +64,8 @@ if (len(new_theses) != 0):
 	for x in sorted(new_theses):
 		mail_str += format_thesis(x, theses_dict[x])
 
-print mail_str
-
 # we have produced output, thus we shall mail the user and update our dump file
 if (mail_str != ""):
-	f = open(config_dump_filename, 'w')
-	f.write(json.dumps(theses_dict))
-	f.close()
 	body = string.join((
 			"From: %s" % config_email_from,
 			"To: %s" % config_email_to,
@@ -83,3 +76,8 @@ if (mail_str != ""):
 	server = smtplib.SMTP(config_email_host)
 	server.sendmail(config_email_from, [config_email_to], body)
 	server.quit()
+
+if (mail_str != "") or something_removed:
+	f = open(config_dump_filename, 'w')
+	f.write(json.dumps(theses_dict))
+	f.close()
