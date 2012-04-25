@@ -41,16 +41,16 @@ for url in urls:
 	table = main_div.find('table')
 	tr = table.findAll('tr')
 	for i in range(0, len(tr) , 2):
-		header = tr[i].find('td').find('b').renderContents()
+		header = tr[i].find('td').find('b').renderContents().decode('utf-8')
 		date, area = header.split(' - ') # first element is date, second element is area
 		info = tr[i + 1].find('td')
-		title = info.find('b').renderContents().strip()
+		title = info.find('b').renderContents().strip().decode('utf-8')
 		author, level, info = info.find('font').renderContents().replace('</br>', '').replace('<br/>', '').split('<br>')
-		author = author.strip()
-		level = level.strip()
-		info = info.strip()
+		author = author.strip().decode('utf-8')
+		level = level.strip().decode('utf-8')
+		info = info.strip().decode('utf-8')
 		clock, location = info.split(', ')
-		entry = { 'date' : date + ', ' + clock, 'location' : location, 'title' : title, 'level' : level, 'area' : area }
+		entry = { u'date' : date + u', ' + clock, u'location' : location, u'title' : title, u'level' : level, u'area' : area }
 		theses_dict.update({ author : entry })
 
 
