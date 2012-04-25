@@ -1,3 +1,7 @@
-Thesis Watch is a simple utility that crawls ISY and IDA and searches for
-thesis presentations. It will notify the user by mail if there are any new
-thesis presentations posted.
+Simple utility that crawls ISY and IDA and searches for master thesis presentations.
+
+If there are any new theses other than the cached ones the user will be notified by mail.
+
+Mail address and other settings such as filename for the cache can be made in config.py
+
+Uses httplib2-0.7.4 and Beautiful Soup 4.0.4
