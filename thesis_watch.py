@@ -9,13 +9,13 @@ import string
 import sys
 
 def format_thesis(author, info):
-	string = "\n"
-	string += "What: " + info['title'] + "\n"
-	string += "Who: " + author + "\n"
-	string += "When: " + info['date'] + "\n"
-	string += "Location: " + info['location'] + "\n"
-	string += "Area: " + info['area'] + "\n"
-	string += "Level: " + info['level'] + "\n"
+	string = u"\n"
+	string += u"What: " + info['title'] + u"\n"
+	string += u"Who: " + author + u"\n"
+	string += u"When: " + info['date'] + u"\n"
+	string += u"Location: " + info['location'] + u"\n"
+	string += u"Area: " + info['area'] + u"\n"
+	string += u"Level: " + info['level'] + u"\n"
 	return string
 
 old_dict = {}
@@ -67,14 +67,14 @@ if (len(new_theses) != 0):
 # we have produced output, thus we shall mail the user and update our dump file
 if (mail_str != ""):
 	body = string.join((
-			"From: %s" % config_email_from,
-			"To: %s" % config_email_to,
-			"Subject: %s" % config_email_subject ,
-			"",
+			u"From: %s" % config_email_from,
+			u"To: %s" % config_email_to,
+			u"Subject: %s" % config_email_subject ,
+			u"",
 			mail_str
-			), "\r\n")
+			), u"\r\n")
 	server = smtplib.SMTP(config_email_host)
-	server.sendmail(config_email_from, [config_email_to], body)
+	server.sendmail(config_email_from, [config_email_to], body.encode('utf-8'))
 	server.quit()
 
 if (mail_str != "") or something_removed:
