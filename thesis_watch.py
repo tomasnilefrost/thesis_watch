@@ -8,9 +8,29 @@ import smtplib
 import string
 import sys
 
+def format_thesis(author, info):
+	string = "\n"
+	string += "What: " + info['title'] + "\n"
+	string += "Who: " + author + "\n"
+	string += "When: " + info['date'] + "\n"
+	string += "Location: " + info['location'] + "\n"
+	string += "Area: " + info['area'] + "\n"
+	string += "Level: " + info['level'] + "\n"
+	return string
+
+old_dict = {}
+try:
+	f = open(config_dump_filename, 'r')
+	content = f.read()
+	old_dict = json.loads(content)
+	f.close()
+except:
+	# we will simply compare with an empty dictionary of the "old" these
+	pass
+
 http = httplib2.Http()
 urls = ['http://www.ida.liu.se/edu/ugrad/thesis/presentations.shtml', 'http://www.isy.liu.se/edu/pres/']
-thesis_dict = {}
+theses_dict = {}
 for url in urls:
 	try:
 		resp, content = http.request(url)
@@ -31,6 +51,35 @@ for url in urls:
 		info = info.strip()
 		clock, location = info.split(', ')
 		entry = { 'date' : date + ', ' + clock, 'location' : location, 'title' : title, 'level' : level, 'area' : area }
-		thesis_dict.update({ author : entry })
+		theses_dict.update({ author : entry })
 
-print thesis_dict
+
+print theses_dict
+print old_dict
+
+new_theses = [thesis for thesis in theses_dict if thesis not in old_dict]
+
+mail_str = ""
+if (len(new_theses) != 0):
+	mail_str = "New theses added:\n"
+	# done alphabetically
+	for x in sorted(new_theses):
+		mail_str += format_thesis(x, theses_dict[x])
+
+print mail_str
+
+# we have produced output, thus we shall mail the user and update our dump file
+if (mail_str != ""):
+	f = open(config_dump_filename, 'w')
+	f.write(json.dumps(theses_dict))
+	f.close()
+	body = string.join((
+			"From: %s" % config_email_from,
+			"To: %s" % config_email_to,
+			"Subject: %s" % config_email_subject ,
+			"",
+			mail_str
+			), "\r\n")
+	server = smtplib.SMTP(config_email_host)
+	server.sendmail(config_email_from, [config_email_to], body)
+	server.quit()
